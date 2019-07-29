@@ -4,6 +4,7 @@ import { getMovies } from '../services/fakeMovieService'
 import MoviesList from '../components/moviesList'
 import { getGenres } from '../services/fakeGenreService'
 import Pagination from '../common/Pagination.js'
+import Navbar from '../components/navbar'
 import { Paginate } from '../utils/paginate'
 import _ from 'lodash'
 
@@ -61,13 +62,13 @@ class App extends Component {
     if (this.state.movies.length === 0)
       return <p>There are no movies in the database</p>
 
-    const filtered =
+    const filteredMovies =
       selectedGenre && selectedGenre._id
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
         : allMovies
 
     const sortedMovies = _.orderBy(
-      filtered,
+      filteredMovies,
       [sortColumn.path],
       [sortColumn.order]
     )
@@ -75,34 +76,37 @@ class App extends Component {
     const paginatedMovies = Paginate(sortedMovies, currentPage, itemsPerPage)
 
     return (
-      <main className="container-fluid mt-2">
-        <div className="row">
-          <div className="col-lg-3">
-            <MoviesList
-              data={genres}
-              onSort={sortColumnHandler}
-              selectedGenre={selectedGenre}
-              genreHandler={selectGenreHandler}
-            />
+      <>
+        <Navbar />
+        <main className="container-fluid mt-2">
+          <div className="row">
+            <div className="col-lg-3">
+              <MoviesList
+                data={genres}
+                onSort={sortColumnHandler}
+                selectedGenre={selectedGenre}
+                genreHandler={selectGenreHandler}
+              />
+            </div>
+            <div className="col-lg-9">
+              <p>Showing {paginatedMovies.length} movies in the database</p>
+              <MoviesTable
+                sortColumn={sortColumn}
+                onSort={sortColumnHandler}
+                data={paginatedMovies}
+                onLikeMovie={likeMovieHandler}
+                onDeleteMovie={deleteMovieHandler}
+              />
+              <Pagination
+                currentPage={currentPage}
+                itemsTotal={filteredMovies.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={pageChangeHandler}
+              />
+            </div>
           </div>
-          <div className="col-lg-9">
-            <p>Showing {paginatedMovies.length} movies in the database</p>
-            <MoviesTable
-              sortColumn={sortColumn}
-              onSort={sortColumnHandler}
-              data={paginatedMovies}
-              onLikeMovie={likeMovieHandler}
-              onDeleteMovie={deleteMovieHandler}
-            />
-            <Pagination
-              currentPage={currentPage}
-              itemsTotal={filtered.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={pageChangeHandler}
-            />
-          </div>
-        </div>
-      </main>
+        </main>
+      </>
     )
   }
 }
