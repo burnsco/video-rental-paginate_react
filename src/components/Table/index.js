@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TableHeader from '../Table/tableHeader'
 import TableBody from '../Table/tableBody'
+import Like from '../../common/Like.js'
 
 const moviesTable = ({
   data: movies,
@@ -12,11 +13,23 @@ const moviesTable = ({
 }) => {
   const columns = [
     { path: 'title', label: 'Title' },
-    { path: 'name.genre', label: 'Genre' },
+    { path: 'genre.name', label: 'Genre' },
     { path: 'numberInStock', label: 'Stock' },
     { path: 'dailyRentalRate', label: 'Rate' },
-    { key: 'like' },
-    { key: 'delete' }
+    {
+      key: 'like',
+      content: movie => (
+        <Like liked={movie.liked} onLikeMovie={() => onLikeMovie(movie)} />
+      )
+    },
+    {
+      key: 'delete',
+      content: movie => (
+        <button className="btn btn-danger" onClick={() => onDeleteMovie(movie)}>
+          Delete
+        </button>
+      )
+    }
   ]
   return (
     <>
@@ -28,6 +41,7 @@ const moviesTable = ({
         />
         <TableBody
           data={movies}
+          columns={columns}
           onDeleteMovie={onDeleteMovie}
           onLikeMovie={onLikeMovie}
         />
