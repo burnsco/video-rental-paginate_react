@@ -1,20 +1,8 @@
 import React from 'react'
-import Like from '../common/Like'
+import Like from '../../common/Like.js'
 
-const moviesTable = ({ data: movies, onDeleteMovie, onLikeMovie }) => {
-  const tableHead = (
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Genre</th>
-        <th>Stock</th>
-        <th>Rate</th>
-        <th> </th>
-        <th> </th>
-      </tr>
-    </thead>
-  )
-  const tableBody = (
+const TableBody = ({ onLikeMovie, onDeleteMovie, data: movies }) => {
+  return (
     <tbody>
       {movies.map(movie => (
         <tr key={movie._id}>
@@ -37,16 +25,6 @@ const moviesTable = ({ data: movies, onDeleteMovie, onLikeMovie }) => {
       ))}
     </tbody>
   )
-
-  return (
-    <>
-      <p className="ml-5">Showing {movies.length} movies in the database.</p>
-      <table className="table">
-        {tableHead}
-        {tableBody}
-      </table>
-    </>
-  )
 }
 
-export default moviesTable
+export default TableBody

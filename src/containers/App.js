@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import MoviesTable from '../components/moviesTable'
+import MoviesTable from '../components/Table'
 import { getMovies } from '../services/fakeMovieService'
 import MoviesList from '../components/moviesList'
 import { getGenres } from '../services/fakeGenreService'
 import Pagination from '../common/Pagination.js'
+import { Paginate } from '../utils/paginate'
+import _ from 'lodash'
 
 class App extends Component {
   state = {
@@ -11,7 +13,8 @@ class App extends Component {
     genres: [],
     selectedGenre: 'All Genres',
     itemsPerPage: 4,
-    currentPage: 1
+    currentPage: 1,
+    sortColumn: { path: 'title', order: 'asc' }
   }
   componentWillMount() {
     const movies = getMovies()
@@ -28,55 +31,75 @@ class App extends Component {
     const movies = [...this.state.movies].filter(m => m._id !== movie._id)
     this.setState({ movies })
   }
-  selectGenreHandler = selectedGenre => {
-    this.setState({ selectedGenre })
+  selectGenreHandler = genre => {
+    this.setState({ selectedGenre: genre, currentPage: 1 })
   }
   pageChangeHandler = page => {
     this.setState({ currentPage: page })
   }
+  sortColumnHandler = sortColumn => {
+    this.setState({ sortColumn })
+  }
 
   render() {
-    let { genres, selectedGenre, itemsPerPage, currentPage } = this.state
-    let movies = [...this.state.movies]
+    const {
+      genres,
+      selectedGenre,
+      itemsPerPage,
+      currentPage,
+      sortColumn,
+      movies: allMovies
+    } = this.state
     const {
       deleteMovieHandler,
+      sortColumnHandler,
       selectGenreHandler,
       likeMovieHandler,
       pageChangeHandler
     } = this
-    if (selectedGenre !== 'All Genres') {
-      movies = movies.filter(m => m.genre.name === selectedGenre)
-    }
 
-    // filter by genre (and 'all genres')
-    // filter by table headings ('title', 'genre' , 'stock', 'rate')
+    if (this.state.movies.length === 0)
+      return <p>There are no movies in the database</p>
+
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
+        : allMovies
+
+    const sortedMovies = _.orderBy(
+      filtered,
+      [sortColumn.path],
+      [sortColumn.order]
+    )
+
+    const paginatedMovies = Paginate(sortedMovies, currentPage, itemsPerPage)
 
     return (
       <main className="container-fluid mt-2">
         <div className="row">
           <div className="col-lg-3">
-            {movies.length > 0 && (
-              <MoviesList
-                data={genres}
-                selectedGenre={selectedGenre}
-                genreHandler={selectGenreHandler}
-              />
-            )}
+            <MoviesList
+              data={genres}
+              onSort={sortColumnHandler}
+              selectedGenre={selectedGenre}
+              genreHandler={selectGenreHandler}
+            />
           </div>
           <div className="col-lg-9">
-            <>
-              <MoviesTable
-                data={movies}
-                onLikeMovie={likeMovieHandler}
-                onDeleteMovie={deleteMovieHandler}
-              />
-              <Pagination
-                currentPage={currentPage}
-                itemsTotal={movies.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={pageChangeHandler}
-              />
-            </>
+            <p>Showing {paginatedMovies.length} movies in the database</p>
+            <MoviesTable
+              sortColumn={sortColumn}
+              onSort={sortColumnHandler}
+              data={paginatedMovies}
+              onLikeMovie={likeMovieHandler}
+              onDeleteMovie={deleteMovieHandler}
+            />
+            <Pagination
+              currentPage={currentPage}
+              itemsTotal={filtered.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={pageChangeHandler}
+            />
           </div>
         </div>
       </main>

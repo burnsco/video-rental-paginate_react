@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const moviesList = ({ data: genres, genreHandler, selectedGenre }) => {
   return (
@@ -6,10 +7,10 @@ const moviesList = ({ data: genres, genreHandler, selectedGenre }) => {
       <ul className="list-group mt-4">
         {genres.map(genre => (
           <li
-            onClick={() => genreHandler(genre.name)}
+            onClick={() => genreHandler(genre)}
             key={genre._id}
             className={
-              selectedGenre === genre.name
+              selectedGenre._id === genre._id
                 ? 'list-group-item active'
                 : 'list-group-item'
             }
@@ -20,6 +21,11 @@ const moviesList = ({ data: genres, genreHandler, selectedGenre }) => {
       </ul>
     </>
   )
+}
+
+moviesList.propTypes = {
+  data: PropTypes.array.isRequired,
+  genreHandler: PropTypes.func.isRequired
 }
 
 export default moviesList

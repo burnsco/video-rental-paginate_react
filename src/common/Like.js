@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Like = ({ liked, onLikeMovie }) => {
   let classes = 'fa fa-heart'
@@ -11,6 +12,11 @@ const Like = ({ liked, onLikeMovie }) => {
       className={classes}
     />
   )
+}
+
+Like.propTypes = {
+  liked: PropTypes.bool.isRequired,
+  onLikeMovie: PropTypes.func.isRequired
 }
 
 export default Like
