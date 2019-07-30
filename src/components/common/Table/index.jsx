@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TableHeader from './tableHeader'
-import TableBody from './tableBody'
-import Like from '../Like.js'
+import TableHeader from './tableHeader.jsx'
+import TableBody from './tableBody.jsx'
+import Like from '../Like.jsx'
 
 class moviesTable extends Component {
   render() {

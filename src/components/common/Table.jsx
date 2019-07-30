@@ -1,6 +1,6 @@
 import React from 'react'
-import TableHeader from '../components/Table/tableHeader'
-import TableBody from '../components/Table/tableBody'
+import TableHeader from '../components/Table/tableHeader.jsx'
+import TableBody from '../components/Table/tableBody.jsx'
 
 const Table = ({
   columns,

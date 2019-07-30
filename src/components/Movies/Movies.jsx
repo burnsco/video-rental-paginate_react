@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { getMovies } from '../../services/fakeMovieService'
 import { getGenres } from '../../services/fakeGenreService'
-import MoviesList from './moviesList'
-import MoviesTable from '../common/Table/index'
-import Pagination from '../common/Pagination'
-import { Paginate } from '../../utils/paginate'
+import MoviesList from './moviesList.jsx'
+import MoviesTable from '../common/Table/index.jsx'
+import Pagination from '../common/Pagination.jsx'
+import { Paginate } from '../../utils/paginate.jsx'
 import _ from 'lodash'
 
 class Movies extends Component {
@@ -84,6 +84,7 @@ class Movies extends Component {
             genreHandler={selectGenreHandler}
           />
         </div>
+
         <div className="col-lg-9">
           <p>Showing {paginatedMovies.length} movies in the database</p>
           <MoviesTable
