@@ -1,47 +1,43 @@
-import React, { Component } from 'react'
-import Input from '../common/input.jsx'
+import React from 'react'
+import Joi from 'joi-browser'
+import Form from '../common/form.jsx'
 
-class Register extends Component {
+class Register extends Form {
   state = {
-    account: { username: '', password: '' },
+    data: { username: '', password: '', name: '' },
     errors: {}
   }
 
-  handleSubmit = e => {
-    e.preventDefault()
+  schema = {
+    username: Joi.string()
+      .required()
+      .email()
+      .label('Username'),
+    password: Joi.string()
+      .required()
+      .min(5)
+      .label('Password'),
+    name: Joi.string()
+      .required()
+      .label('Name')
   }
 
-  handleChange = ({ currentTarget: input }) => {
-    const account = { ...this.state.account }
-    account[input.name] = input.value
-    this.setState({ account })
+  doSubmit = () => {
+    // Call the server
+    console.log('Submitted')
   }
 
   render() {
-    const { username, password } = this.state.account
-    const { handleSubmit, handleChange } = this
-
     return (
-      <>
+      <div className="container">
         <h1>Register</h1>
-        <form onSubmit={handleSubmit}>
-          <Input
-            name="username"
-            value={username}
-            label="Username"
-            onChange={handleChange}
-          />
-
-          <Input
-            name="password"
-            value={password}
-            label="Password"
-            onChange={handleChange}
-          />
-
-          <button className="btn btn-primary btn-lg">Submit</button>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput('username', 'Username')}
+          {this.renderInput('password', 'Password', 'password')}
+          {this.renderInput('name', 'Name')}
+          {this.renderButton('Register')}
         </form>
-      </>
+      </div>
     )
   }
 }

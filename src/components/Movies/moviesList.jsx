@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const moviesList = ({ data: genres, genreHandler, selectedGenre }) => {
   return (
     <>
-      <ul className="list-group mt-4">
+      <ul className="list-group ">
         {genres.map(genre => (
           <li
             onClick={() => genreHandler(genre)}

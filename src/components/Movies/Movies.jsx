@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { getMovies } from '../../services/fakeMovieService'
+import { getMovies, getMovie } from '../../services/fakeMovieService'
 import { getGenres } from '../../services/fakeGenreService'
 import MoviesList from './moviesList.jsx'
 import MoviesTable from '../common/Table/index.jsx'
 import Pagination from '../common/Pagination.jsx'
 import { Paginate } from '../../utils/paginate.jsx'
+import { Link } from 'react-router-dom'
 import _ from 'lodash'
 
 class Movies extends Component {
@@ -39,6 +40,9 @@ class Movies extends Component {
   }
   sortColumnHandler = sortColumn => {
     this.setState({ sortColumn })
+  }
+  getMovieHandler = id => {
+    return getMovie(id)
   }
 
   render() {
@@ -86,6 +90,9 @@ class Movies extends Component {
         </div>
 
         <div className="col-lg-9">
+          <Link className="btn btn-primary mb-4" to="/movies/new">
+            New Movie
+          </Link>
           <p>Showing {paginatedMovies.length} movies in the database</p>
           <MoviesTable
             sortColumn={sortColumn}
