@@ -56,21 +56,14 @@ class Form extends Component {
     )
   }
 
-  handleSelect = ({ currentTarget: input }) => {
-    const data = { ...this.state.data }
-    data[input.name] = input.value
-
-    this.setState({ data })
-  }
-  renderSelect(name, label) {
-    const genres = ['action', 'comedy', 'thriller']
-    const { errors, genre } = this.state
+  renderSelect(name, label, options) {
+    const { data, errors } = this.state
     return (
       <Select
         name={name}
-        value={genre}
-        handler={this.handleSelect}
-        options={genres}
+        value={data[name]}
+        onChange={this.handleChange}
+        options={options}
         label={label}
         error={errors[name]}
       />

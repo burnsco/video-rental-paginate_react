@@ -15,7 +15,6 @@ const Like = ({ liked, onLikeMovie }) => {
 }
 
 Like.propTypes = {
-  liked: PropTypes.bool.isRequired,
   onLikeMovie: PropTypes.func.isRequired
 }
 

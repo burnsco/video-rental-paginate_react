@@ -6,9 +6,8 @@ import Rentals from '../components/Rentals/Rentals.jsx'
 import NotFound from '../components/Navigation/not_found.jsx'
 import Login from '../components/Users/Login.jsx'
 import Register from '../components/Users/Register.jsx'
-import MovieForm from '../components/Movies/MovieForm.jsx'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import NewMovie from '../components/Movies/newMovie.jsx'
+import MovieForm from '../components/Movies/movieForm.jsx'
 
 class App extends Component {
   render() {
@@ -26,7 +25,7 @@ class App extends Component {
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
-            <Route path="/movies/new" component={NewMovie} />
+            <Route path="/movies/new" component={MovieForm} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={Movies} />
             <Route path="/customers" component={Customers} />

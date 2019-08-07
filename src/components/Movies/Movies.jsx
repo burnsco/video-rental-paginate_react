@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getMovies, getMovie } from '../../services/fakeMovieService'
+import { getMovies } from '../../services/fakeMovieService'
 import { getGenres } from '../../services/fakeGenreService'
 import MoviesList from './moviesList.jsx'
 import MoviesTable from '../common/Table/index.jsx'
@@ -15,6 +15,7 @@ class Movies extends Component {
     selectedGenre: { name: 'All Genres', _id: '' },
     itemsPerPage: 4,
     currentPage: 1,
+    search: '',
     sortColumn: { path: 'title', order: 'asc' }
   }
   componentWillMount() {
@@ -33,7 +34,7 @@ class Movies extends Component {
     this.setState({ movies })
   }
   selectGenreHandler = genre => {
-    this.setState({ selectedGenre: genre, currentPage: 1 })
+    this.setState({ selectedGenre: genre, currentPage: 1, search: '' })
   }
   pageChangeHandler = page => {
     this.setState({ currentPage: page })
@@ -41,8 +42,13 @@ class Movies extends Component {
   sortColumnHandler = sortColumn => {
     this.setState({ sortColumn })
   }
-  getMovieHandler = id => {
-    return getMovie(id)
+
+  searchHandler = ({ currentTarget: input }) => {
+    this.setState({
+      search: input.value,
+      selectedGenre: { name: 'All Genres', _id: '' },
+      currentPage: 1
+    })
   }
 
   render() {
@@ -50,6 +56,7 @@ class Movies extends Component {
       genres,
       selectedGenre,
       itemsPerPage,
+      search,
       currentPage,
       sortColumn,
       movies: allMovies
@@ -57,18 +64,30 @@ class Movies extends Component {
     const {
       deleteMovieHandler,
       sortColumnHandler,
+      saveMovieHandler,
       selectGenreHandler,
       likeMovieHandler,
+      searchHandler,
       pageChangeHandler
     } = this
 
     if (this.state.movies.length === 0)
       return <p>There are no movies in the database</p>
 
-    const filteredMovies =
-      selectedGenre && selectedGenre._id
-        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
-        : allMovies
+    let filteredMovies
+    if (search.length < 1) {
+      filteredMovies =
+        selectedGenre && selectedGenre._id
+          ? allMovies.filter(m => m.genre._id === selectedGenre._id)
+          : allMovies
+    } else {
+      filteredMovies = allMovies.filter(movie => {
+        return (
+          movie.title.toLowerCase().indexOf(this.state.search.toLowerCase()) !==
+          -1
+        )
+      })
+    }
 
     const sortedMovies = _.orderBy(
       filteredMovies,
@@ -93,12 +112,22 @@ class Movies extends Component {
           <Link className="btn btn-primary mb-4" to="/movies/new">
             New Movie
           </Link>
+
           <p>Showing {paginatedMovies.length} movies in the database</p>
+
+          <input
+            type="text"
+            onChange={searchHandler}
+            className="form-control mb-1"
+            value={search}
+          />
+
           <MoviesTable
             sortColumn={sortColumn}
             onSort={sortColumnHandler}
             data={paginatedMovies}
             onLikeMovie={likeMovieHandler}
+            onSaveMovie={saveMovieHandler}
             onDeleteMovie={deleteMovieHandler}
           />
           <Pagination

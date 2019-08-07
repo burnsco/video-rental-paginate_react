@@ -1,23 +1,15 @@
 import React from 'react'
 
-const select = ({ name, label, error, options, value, handler }) => {
-  const makeUpperCase = input => {
-    return input.charAt(0).toUpperCase() + input.slice(1)
-  }
+const select = ({ name, label, error, options, handler, ...rest }) => {
   return (
     <div className="form-row align-items-center">
       <div className="form-group">
         <label htmlFor={name}>{label}</label>
-        <select
-          value={value}
-          onChange={handler}
-          className="form-control"
-          name={name}
-          id={name}
-        >
+        <select {...rest} className="form-control" name={name} id={name}>
+          <option value="" />
           {options.map(genre => (
-            <option key={genre} value={genre}>
-              {makeUpperCase(genre)}
+            <option key={genre._id} value={genre._id}>
+              {genre.name}
             </option>
           ))}
         </select>
