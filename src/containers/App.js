@@ -6,8 +6,10 @@ import Rentals from '../components/Rentals/Rentals.jsx'
 import NotFound from '../components/Navigation/not_found.jsx'
 import Login from '../components/Users/Login.jsx'
 import Register from '../components/Users/Register.jsx'
+import 'react-toastify/dist/ReactToastify.css'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import MovieForm from '../components/Movies/movieForm.jsx'
+import { ToastContainer } from 'react-toastify'
 
 class App extends Component {
   render() {
@@ -20,6 +22,7 @@ class App extends Component {
     ]
     return (
       <>
+        <ToastContainer />
         <Navbar items={navItems} brand="Vidly" />
         <main className="container-fluid mt-2">
           <Switch>

@@ -1,4 +1,7 @@
 import * as genresAPI from './fakeGenreService'
+import axios from 'axios'
+
+const apiEndPoint = 'http://localhost:3900/api/movies'
 
 const movies = [
   {
@@ -76,8 +79,9 @@ const movies = [
   }
 ]
 
-export function getMovies() {
-  return movies
+export async function getMovies() {
+  const { data: movies } = await axios.get(apiEndPoint)
+  console.log(movies)
 }
 
 export function getMovie(id) {

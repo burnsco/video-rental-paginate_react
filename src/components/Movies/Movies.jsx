@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { getMovies } from '../../services/fakeMovieService'
-import { getGenres } from '../../services/fakeGenreService'
 import MoviesList from './moviesList.jsx'
 import MoviesTable from '../common/Table/index.jsx'
 import Pagination from '../common/Pagination.jsx'
 import { Paginate } from '../../utils/paginate.jsx'
-import { Link } from 'react-router-dom'
+import { getGenres, getMovies, deleteMovie } from '../../services/movieService'
+import MoviesHeader from './moviesHeader.jsx'
 import _ from 'lodash'
 
 class Movies extends Component {
@@ -18,10 +17,12 @@ class Movies extends Component {
     search: '',
     sortColumn: { path: 'title', order: 'asc' }
   }
-  componentWillMount() {
-    const movies = getMovies()
-    const genres = [{ name: 'All Genres', _id: '' }, ...getGenres()]
-    this.setState({ movies, genres })
+  async componentDidMount() {
+    const { data: movieslist } = await getMovies()
+    const { data: genreslist } = await getGenres()
+    const genres = [{ _id: '', name: 'All Genres' }, ...genreslist]
+    const movies = [...movieslist]
+    this.setState({ genres, movies })
   }
   likeMovieHandler = movie => {
     const movies = [...this.state.movies]
@@ -29,9 +30,12 @@ class Movies extends Component {
     movies[index].liked = !movies[index].liked
     this.setState({ movies })
   }
-  deleteMovieHandler = movie => {
-    const movies = [...this.state.movies].filter(m => m._id !== movie._id)
+  deleteMovieHandler = async movie => {
+    const originalMovies = this.state.movies
+    const movies = originalMovies.filter(m => m._id !== movie._id)
     this.setState({ movies })
+
+    await deleteMovie(movie._id)
   }
   selectGenreHandler = genre => {
     this.setState({ selectedGenre: genre, currentPage: 1, search: '' })
@@ -42,7 +46,6 @@ class Movies extends Component {
   sortColumnHandler = sortColumn => {
     this.setState({ sortColumn })
   }
-
   searchHandler = ({ currentTarget: input }) => {
     this.setState({
       search: input.value,
@@ -61,6 +64,7 @@ class Movies extends Component {
       sortColumn,
       movies: allMovies
     } = this.state
+
     const {
       deleteMovieHandler,
       sortColumnHandler,
@@ -109,17 +113,10 @@ class Movies extends Component {
         </div>
 
         <div className="col-lg-9">
-          <Link className="btn btn-primary mb-4" to="/movies/new">
-            New Movie
-          </Link>
-
-          <p>Showing {paginatedMovies.length} movies in the database</p>
-
-          <input
-            type="text"
-            onChange={searchHandler}
-            className="form-control mb-1"
-            value={search}
+          <MoviesHeader
+            paginatedMovies={paginatedMovies}
+            searchHandler={searchHandler}
+            search={search}
           />
 
           <MoviesTable
@@ -130,6 +127,7 @@ class Movies extends Component {
             onSaveMovie={saveMovieHandler}
             onDeleteMovie={deleteMovieHandler}
           />
+
           <Pagination
             currentPage={currentPage}
             itemsTotal={filteredMovies.length}
